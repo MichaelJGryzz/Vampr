@@ -71,6 +71,64 @@ class Vampire {
 
     return vampire1;
   }
+
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
+    // Check if this vampire's name matches the given name
+    if (this.name === name) {
+      // Return this vampire if the name matches
+      return this;
+    }
+
+    // Iterate through each descendant to search for the vampire
+    for (const descendent of this.offspring) {
+      // Recursively search in descendants
+      const foundVampire = descendent.vampireWithName(name);
+      if (foundVampire) {
+        // Return the found vampire if found
+        return foundVampire;
+      }
+    }
+
+    // Return null if no matching vampire is found in this subtree
+    return null;
+  }
+  
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
+    // Start with zero vampires
+    let totalDescendents = 0;
+
+    // Count the direct offspring
+    totalDescendents += this.numberOfOffspring;
+
+    // Use depth-first traversal to count all the offsprings
+    for (const descendent of this.offspring) {
+      // Recursively count descendents and add to total
+      totalDescendents += descendent.totalDescendents;
+    }
+
+    return totalDescendents;
+  }
+
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
+    // Initialize an empty array
+    let millennialVampires = [];
+
+    // Check if this vampire was converted after 1980
+    if(this.yearConverted > 1980) {
+      millennialVampires.push(this);
+    }
+
+    // Iterate through each offspring to check the year converted
+    for (const descendent of this.offspring) {
+      // Recursively gather millenial vampires from each descendent
+      millennialVampires = millennialVampires.concat(descendent.allMillennialVampires);
+    }
+
+    return millennialVampires;
+  }
 }
 
 module.exports = Vampire;
